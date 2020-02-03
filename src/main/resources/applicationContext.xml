@@ -21,7 +21,6 @@
 	<context:property-placeholder location="classpath:jdbc.properties,classpath:mail.properties" />
 	
 	<!-- 配置邮件发送服务器 -->
-	<!-- 
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="${mail.host}"></property>
 		<property name="port" value="${mail.port}"></property>
@@ -38,7 +37,6 @@
             </props>
         </property>
 	</bean>
-	 -->
 	
 	<!-- shiro 拦截 -->  
     <aop:config proxy-target-class="true"></aop:config>
