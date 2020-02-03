@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+	
+	<!-- 启动SpringMVC注解 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+	
+	<!-- 扫描包 -->
+	<context:component-scan base-package="com.cmdi.*" />
+	
+	<!-- 引入配置文件 -->
+	<context:property-placeholder location="classpath:jdbc.properties,classpath:mail.properties" />
+	
+	<!-- 配置邮件发送服务器 -->
+	<!-- 
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${mail.host}"></property>
+		<property name="port" value="${mail.port}"></property>
+		<property name="username" value="${mail.username}" />
+		<property name="password" value="${mail.password}" />
+		<property name="defaultEncoding" value="UTF-8"></property>
+		<property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">${mail.smtp.auth}</prop>
+                <prop key="mail.smtp.timeout">${mail.smtp.timeout}</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+                <prop key="mail.smtp.from">${mail.from}</prop>
+                <prop key="mail.deadtime">${mail.deadtime}</prop>
+            </props>
+        </property>
+	</bean>
+	 -->
+	
+	<!-- shiro 拦截 -->  
+    <aop:config proxy-target-class="true"></aop:config>
+    
+	<!-- 创建HandlerMapping -->
+	<bean class="org.springframework.web.servlet.mvc.support.ControllerBeanNameHandlerMapping"></bean>
+	
+	 <!-- 创建视图解析器 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value="" />
+	</bean>
+	
+	<!-- 静态文件不拦截 -->
+	<mvc:resources mapping="/**" location="/" />
+	<mvc:resources mapping="/css/**" location="/css/" />
+	<mvc:resources mapping="/extension/**" location="/extension/" />
+	<mvc:resources mapping="/fonts/**" location="/fonts/" />
+	<mvc:resources mapping="/images/**" location="/images/" />
+	<mvc:resources mapping="/js/**" location="/js/" />
+	<mvc:resources mapping="/jsp/**" location="/jsp/" />
+	<mvc:resources mapping="/zrender/**" location="/zrender/" />
+	
+	<!-- 配置动态数据库 -->
+	<bean id="dynamicDataSource" class="com.cmdi.util.DynamicDataSource" >
+   	 <property name="targetDataSources">
+        <map key-type="java.lang.String">
+            <!--通过不同的key决定用哪个dataSource--> 
+            <entry value-ref="postgresqlDataSource" key="postgresqlDataSource"></entry>
+            <entry value-ref="mysqlDataSource" key="mysqlDataSource"></entry>
+        </map>
+   	 </property>
+    	<!--设置默认的dataSource-->
+    <property name="defaultTargetDataSource" ref="mysqlDataSource"></property>
+	</bean>
+	
+	<!-- DataSource-pg -->
+	<bean id="postgresqlDataSource"
+		class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass">
+			<value>${jdbc.pg.driverClassName}</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>${jdbc.pg.url}</value>
+		</property>
+		<property name="user">
+			<value>${jdbc.pg.username}</value>
+		</property>
+		<property name="password">
+			<value>${jdbc.pg.password}</value>
+		</property>
+		<property name="acquireIncrement">
+			<value>${c3p0.acquireIncrement}</value>
+		</property>
+		<property name="initialPoolSize">
+			<value>${c3p0.initialPoolSize}</value>
+		</property>
+		<property name="minPoolSize">
+			<value>${c3p0.minPoolSize}</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>${c3p0.maxPoolSize}</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>${c3p0.maxIdleTime}</value>
+		</property>
+		<property name="maxStatements">
+			<value>${c3p0.maxStatements}</value>
+		</property>
+		<property name="numHelperThreads">
+			<value>${c3p0.numHelperThreads}</value>
+		</property>
+	</bean>
+	<!-- DataSource-mysql -->
+	<bean id="mysqlDataSource"
+		class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass">
+			<value>${jdbc.mysql.driverClassName}</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>${jdbc.mysql.url}</value>
+		</property>
+		<property name="user">
+			<value>${jdbc.mysql.username}</value>
+		</property>
+		<property name="password">
+			<value>${jdbc.mysql.password}</value>
+		</property>
+		<property name="acquireIncrement">
+			<value>${c3p0.acquireIncrement}</value>
+		</property>
+		<property name="initialPoolSize">
+			<value>${c3p0.initialPoolSize}</value>
+		</property>
+		<property name="minPoolSize">
+			<value>${c3p0.minPoolSize}</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>${c3p0.maxPoolSize}</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>${c3p0.maxIdleTime}</value>
+		</property>
+		<property name="maxStatements">
+			<value>${c3p0.maxStatements}</value>
+		</property>
+		<property name="numHelperThreads">
+			<value>${c3p0.numHelperThreads}</value>
+		</property>
+	</bean>
+	
+	<!-- spring自动扫描指定目录下的所有xml映射文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dynamicDataSource"></property>
+		<property name="configLocation" value="classpath:mybatisConfig.xml"></property>
+		<property name="mapperLocations" value="classpath:daoxml/*.xml"></property>
+	</bean>
+	
+	<bean class="com.cmdi.action.SpringInitListener"></bean>
+	
+	<!-- spring自动扫描dao接口所在的包 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.cmdi.dao"></property>
+		<!-- 指定sqlSessionFactory，注意此处用value而不是ref -->
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+	
+	<!-- 事务 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dynamicDataSource"></property>
+	</bean>
+	
+	<!-- 事务管理器注释可用 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<!-- 导入shiro配置文件 -->
+	<import resource="applicationContext-shiro.xml"/>
+	
+	<!-- 开启自动生成代理对象 -->
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	
+	<!-- 开启aop，开启shiro权限注解支持 -->
+	<aop:config proxy-target-class="true"></aop:config>
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager"></property>
+	</bean>
+
+</beans>

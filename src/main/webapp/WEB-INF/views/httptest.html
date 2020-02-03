@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>http test</title>
+</head>
+<body>
+	登录验证-POST
+	<form name="f1" id="f1" action="http://localhost:8080/WebPlatFormOfNBLoT/sys/login" method="post" target="_blank">
+		username<input type="text" name="username" value="admin"/>
+		<br>
+		password<input type="text" name="password" value="admin"/>
+		<br>
+		<input type="submit" value="submit" />
+	</form>
+	
+	问题建筑物楼层-POST
+	<form name="f1" id="f1" action="http://localhost:8080/WebPlatFormOfNBLoT/quesionareas/problemFloortoBuildings" method="post" target="_blank">
+		taskid<input type="text" name="taskid" value="2"/>
+		<br>
+		<input type="submit" value="submit" />
+	</form>
+	
+	问题建筑物rsrp-POST
+	<form name="f1" id="f1" action="http://localhost:8080/WebPlatFormOfNBLoT/build/getfloorrsrp" method="post" target="_blank">
+		taskid<input type="text" name="taskid" value="2"/>
+		<br>
+		buildids<input type="text" name="buildids" value="1,2,3"/>
+		<br>
+		<input type="submit" value="submit" />
+	</form>
+
+	<form name="f2" id="f2" action="http://localhost:8080/WebPlatFormOfNBLoT/sys/login" method="get" target="_blank">
+		username<input type="text" name="username" />
+		password<input type="text" name="password" />
+		<br>
+		<input type="submit" value="submit" />
+	</form>
+</body>
+</html>

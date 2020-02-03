@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+	
+	<!-- 在web.xml中配置shiro过滤器的beanid -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- 加入自定义的formAuthenticationFilter，如果不加会使用默认FormAuthenticationFilter -->
+		<property name="filters">
+			<map>
+				<entry key="authc" value-ref="myformAuthenticationFilter"></entry>
+			</map>
+		</property>
+		<property name="securityManager" ref="securityManager" />
+		<!-- loginUrl认证提交地址，如果没有认证将会请求此地址进行认证，请求此地址将由默认的formAuthenticationFilter进行表单认证 -->
+		<!-- loginUrls也是认证失败后的跳转地址，需要在执行体内处理登录失败 -->
+		<!-- 默认的formAuthenticationFilter接受的2个参数名为：username和password，如果认证失败，那么FormAuthenticationFilter向request域中填充一个参数shiroLoginFailure记录异常信息 -->
+		<property name="loginUrl" value="/user/login" />
+		<!-- successUrl用户登录成功的跳转地址 -->
+		<property name="successUrl" value="/user/loginsuccess"></property>
+		<!-- unauthorizedUrl权限认证失败的跳转地址 -->
+		<property name="unauthorizedUrl" value="/user/refuse" />
+		<!-- 过滤器链定义，从上向下顺序执行，一般将/**放在最下边 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/statics/** = anon
+				/user/logout = logout
+				/index.html = authc
+				<!-- user表示身份认证通过或通过记住我认证通过的可以访问 -->
+				/login.html = anon
+				/user/getlist = authc
+				<!-- 访问/test/getlist需要aaa:bbb -->
+				<!-- 如果权限和url太多，每个都要配置perms比较麻烦，所以推荐使用注解的方式进行授权管理 -->
+				/user/getlist = perms[aaa:bbb]
+				/user/testex = anon
+				/lo/code = anon
+				/user/testlog = anon
+				/** = authc
+			</value>
+		</property>
+	</bean>
+	
+	<!-- 认证过滤器 -->
+	<bean id="myformAuthenticationFilter" class="com.cmdi.realm.MyFormAuthenticationFilter">
+		<!-- 可自定义实现验证码 -->
+		<!-- 通过usernameParam和passwordParam自定义前端用户名和密码的名 -->
+		<property name="usernameParam" value="username"></property>
+		<property name="passwordParam" value="password"></property>
+		<!-- 记住我 ，前端按钮名为rememberme  <property name="rememberMeParam" value="rememberMe"/>-->
+		
+	</bean>
+
+	<!-- securityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="customRealm" />
+		<!-- 注入缓存管理器 -->
+		<property name="cacheManager" ref="acacheManager"></property>
+		<!-- 注入session管理器 -->
+		<property name="sessionManager" ref="sessionManager" />
+		<!-- 配置记住我功能，需要读写cookie -->
+		<property name="rememberMeManager" ref="rememberMeManager"/>
+	</bean>
+
+	<!-- realm -->
+	<bean id="customRealm" class="com.cmdi.realm.CustomRealm">
+		<!-- 如果需要凭证验证，需要加入匹配器    -->
+		<property name="credentialsMatcher" ref="credentialsMatcher"></property>
+		
+	</bean>
+	
+	<!-- shiro可以实现凭证验证，如md5加密校验，需要加入凭证匹配器 -->
+	<bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+		<property name="hashAlgorithmName" value="md5"></property>
+		<property name="hashIterations" value="1"></property>
+	</bean>
+	
+	<!-- 缓存管理器,shiro默认关闭认证缓存，开启授权缓存 -->
+	<bean id="acacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<!-- 配置文件如果直接放在WEB-INF目录下，会提示无法加载，所以放在resource下 -->
+    	<property name="cacheManagerConfigFile" value="classpath:shiro-ehcache.xml"/>
+    </bean>
+    
+    <!-- session管理器 -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <!-- session的失效时长，单位毫秒 -->
+        <property name="globalSessionTimeout" value="600000"/>
+        <!-- 删除失效的session -->
+        <property name="deleteInvalidSessions" value="true"/>
+    </bean>
+    
+    <!-- rememberMeManager管理器 -->
+	<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+		<property name="cookie" ref="rememberMeCookie" />
+	</bean>
+    <!-- cookie -->
+	<bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<constructor-arg value="rememberMe" />
+		<!-- 记住我cookie生效时间30天 -->
+		<property name="maxAge" value="2592000" />
+	</bean>
+    
+    
+	
+</beans>
+
+<!-- 
+过滤器简称	对应的java类
+anon		org.apache.shiro.web.filter.authc.AnonymousFilter
+authc		org.apache.shiro.web.filter.authc.FormAuthenticationFilter
+authcBasic	org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter
+perms		org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter
+port		org.apache.shiro.web.filter.authz.PortFilter
+rest		org.apache.shiro.web.filter.authz.HttpMethodPermissionFilter
+roles		org.apache.shiro.web.filter.authz.RolesAuthorizationFilter
+ssl			org.apache.shiro.web.filter.authz.SslFilter
+user		org.apache.shiro.web.filter.authc.UserFilter
+logout		org.apache.shiro.web.filter.authc.LogoutFilter
+anon:例子/admins/**=anon 没有参数，表示可以匿名使用。
+authc:例如/admins/user/**=authc表示需要认证(登录)才能使用，FormAuthenticationFilter是表单认证，没有参数 
+roles：例子/admins/user/**=roles[admin],参数可以写多个，多个时必须加上引号，并且参数之间用逗号分割，当有多个参数时，例如admins/user/**=roles["admin,guest"],每个参数通过才算通过，相当于hasAllRoles()方法。
+perms：例子/admins/user/**=perms[user:add:*],参数可以写多个，多个时必须加上引号，并且参数之间用逗号分割，例如/admins/user/**=perms["user:add:*,user:modify:*"]，当有多个参数时必须每个参数都通过才通过，想当于isPermitedAll()方法。
+rest：例子/admins/user/**=rest[user],根据请求的方法，相当于/admins/user/**=perms[user:method] ,其中method为post，get，delete等。
+port：例子/admins/user/**=port[8081],当请求的url的端口不是8081是跳转到schemal://serverName:8081?queryString,其中schmal是协议http或https等，serverName是你访问的host,8081是url配置里port的端口，queryString
+是你访问的url里的？后面的参数。
+authcBasic：例如/admins/user/**=authcBasic没有参数表示httpBasic认证
+ssl:例子/admins/user/**=ssl没有参数，表示安全的url请求，协议为https
+user:例如/admins/user/**=user没有参数表示必须存在用户, 身份认证通过或通过记住我认证通过的可以访问，当登入操作时不做检查
+注：
+anon，authcBasic，auchc，user是认证过滤器，
+perms，roles，ssl，rest，port是授权过滤器 
+-->

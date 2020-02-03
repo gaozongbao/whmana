@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmdi.dao.GroupInfoDao">
+  <resultMap id="BaseResultMap" type="com.cmdi.model.GroupInfo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="region" jdbcType="VARCHAR" property="region" />
+    <result column="contact_person" jdbcType="VARCHAR" property="contactPerson" />
+    <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="add_time" jdbcType="VARCHAR" property="addTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="person_address" jdbcType="VARCHAR" property="personAddress" />
+    <result column="person_address_qr" jdbcType="VARCHAR" property="personAddressQr" />
+    <result column="result_address" jdbcType="VARCHAR" property="resultAddress" />
+    <result column="result_address_qr" jdbcType="VARCHAR" property="resultAddressQr" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, region, contact_person, phone_number, email, add_time, status, person_address, 
+    person_address_qr, result_address, result_address_qr
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from group_info
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from group_info
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.cmdi.model.GroupInfo">
+    insert into group_info (id, name, region, 
+      contact_person, phone_number, email, 
+      add_time, status, person_address, 
+      person_address_qr, result_address, result_address_qr
+      )
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, 
+      #{contactPerson,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{addTime,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{personAddress,jdbcType=VARCHAR}, 
+      #{personAddressQr,jdbcType=VARCHAR}, #{resultAddress,jdbcType=VARCHAR}, #{resultAddressQr,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmdi.model.GroupInfo">
+    insert into group_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="region != null">
+        region,
+      </if>
+      <if test="contactPerson != null">
+        contact_person,
+      </if>
+      <if test="phoneNumber != null">
+        phone_number,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="addTime != null">
+        add_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="personAddress != null">
+        person_address,
+      </if>
+      <if test="personAddressQr != null">
+        person_address_qr,
+      </if>
+      <if test="resultAddress != null">
+        result_address,
+      </if>
+      <if test="resultAddressQr != null">
+        result_address_qr,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null">
+        #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="contactPerson != null">
+        #{contactPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        #{addTime,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="personAddress != null">
+        #{personAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="personAddressQr != null">
+        #{personAddressQr,jdbcType=VARCHAR},
+      </if>
+      <if test="resultAddress != null">
+        #{resultAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="resultAddressQr != null">
+        #{resultAddressQr,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmdi.model.GroupInfo">
+    update group_info
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null">
+        region = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="contactPerson != null">
+        contact_person = #{contactPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        add_time = #{addTime,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="personAddress != null">
+        person_address = #{personAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="personAddressQr != null">
+        person_address_qr = #{personAddressQr,jdbcType=VARCHAR},
+      </if>
+      <if test="resultAddress != null">
+        result_address = #{resultAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="resultAddressQr != null">
+        result_address_qr = #{resultAddressQr,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmdi.model.GroupInfo">
+    update group_info
+    set name = #{name,jdbcType=VARCHAR},
+      region = #{region,jdbcType=VARCHAR},
+      contact_person = #{contactPerson,jdbcType=VARCHAR},
+      phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      add_time = #{addTime,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      person_address = #{personAddress,jdbcType=VARCHAR},
+      person_address_qr = #{personAddressQr,jdbcType=VARCHAR},
+      result_address = #{resultAddress,jdbcType=VARCHAR},
+      result_address_qr = #{resultAddressQr,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
