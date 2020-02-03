@@ -13,7 +13,7 @@
 		<!-- 编译时的编码 -->
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 		<!-- 集中定义版本号 -->
-		<spring.version>4.3.12.RELEASE</spring.version>
+		<spring.version>5.2.3.RELEASE</spring.version>
 		<shiro.version>1.2.3</shiro.version>
 	</properties>
 
