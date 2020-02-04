@@ -77,6 +77,16 @@ public class TestController {
         //切换到pg数据库
         System.out.println("jinlail");
     }
+    
+    @ResponseBody
+    @RequestMapping(value = "/down", method = {RequestMethod.POST, RequestMethod.GET})
+    public void testdow(@RequestParam(value = "name", required = true) String name,
+                               HttpServletRequest request,
+                               HttpServletResponse response) throws Exception {
+        System.out.println("start test");
+        //切换到pg数据库
+        System.out.println("jinlail");
+    }
 
 
     public void returnReponseEntity(HttpServletRequest request, HttpServletResponse response, ResponseEntity result)

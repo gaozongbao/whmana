@@ -61,6 +61,10 @@ public class CustomRealm extends AuthorizingRealm {
 		System.out.println("进来");
 		String principal = (String) token.getPrincipal();
 		System.out.println("principal = " + principal);
+		//唯一账号admin
+		if(!"admin".equals(principal)) {
+			return null;
+		}
 		//可以自动注入service后查询数据库，用户是否存在，密码，菜单，权限列表等
 		//默认密码为admin1234!
 		String realPass = "61b0a605958bcdb2f3f95574127143ef";
