@@ -54,7 +54,7 @@
 	<bean id="myformAuthenticationFilter" class="com.cmdi.realm.MyFormAuthenticationFilter">
 		<!-- 可自定义实现验证码 -->
 		<!-- 通过usernameParam和passwordParam自定义前端用户名和密码的名 -->
-		<property name="usernameParam" value="username"></property>
+		<property name="usernameParam" value="userName"></property>
 		<property name="passwordParam" value="password"></property>
 		<!-- 记住我 ，前端按钮名为rememberme  <property name="rememberMeParam" value="rememberMe"/>-->
 		

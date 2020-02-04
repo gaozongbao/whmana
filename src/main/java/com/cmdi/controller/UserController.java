@@ -28,7 +28,7 @@ import com.cmdi.util.ResponseReturnUtils;
 public class UserController {
 	@ResponseBody
 	@RequestMapping(value = "/login", method = { RequestMethod.POST, RequestMethod.GET })
-	public void login(@RequestParam(value = "username", required = false) String username,
+	public void login(@RequestParam(value = "userName", required = false) String username,
 			@RequestParam(value = "password", required = false) String password,
 			HttpServletRequest request,HttpServletResponse response, HttpSession session) throws Exception {
 		System.out.println("start test");
@@ -37,19 +37,24 @@ public class UserController {
 			Subject subject = SecurityUtils.getSubject();
 			UsernamePasswordToken token = new UsernamePasswordToken(username, password);
 			subject.login(token);
-			result.put("code2", "loginok");
+			result.put("code", "0");
+			result.put("msg", "登录成功");
 		}catch (UnknownAccountException e) {
 			System.out.println("账号或密码不正确");
-			result.put("code2", "nologin");
+			result.put("code", "1");
+			result.put("msg", "账号或密码不正确");
 		}catch (IncorrectCredentialsException e) {
 			System.out.println("账号或密码有误");
-			result.put("code2", "nologin");
+			result.put("code", "2");
+			result.put("msg", "账号或密码有误");
 		}catch (LockedAccountException e) {
 			System.out.println("账号锁定,请联系管理员");
-			result.put("code2", "nologin");
+			result.put("code", "3");
+			result.put("msg", "账号锁定,请联系管理员");
 		}catch (AuthenticationException e) {
 			System.out.println("账户验证失败");
-			result.put("code2", "nologin");
+			result.put("code", "4");
+			result.put("msg", "账户验证失败");
 		}
 		
 		
