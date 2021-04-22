@@ -14,7 +14,7 @@
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 		<!-- 集中定义版本号 -->
 		<spring.version>4.3.12.RELEASE</spring.version>
-		<shiro.version>1.2.3</shiro.version>
+		<shiro.version>1.7.1</shiro.version>
 	</properties>
 
 	<dependencies>
